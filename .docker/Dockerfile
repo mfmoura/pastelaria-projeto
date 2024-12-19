@@ -3,11 +3,12 @@ FROM php:8.2-fpm
 
 # Instale dependências necessárias e extensões PHP
 RUN apt-get update && apt-get install -y \
+    build-essential \
     libzip-dev \
     unzip \
     git \
     libfreetype6-dev \
-    libjpeg62-turbo-dev \
+    libjpeg-dev \
     libpng-dev \
     libwebp-dev \
     libxpm-dev \
@@ -15,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libbz2-dev \
     libtidy-dev \
+    libcurl4-openssl-dev \
     curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm \
     && docker-php-ext-install \
@@ -25,7 +27,6 @@ RUN apt-get update && apt-get install -y \
     mysqli \
     bcmath \
     mbstring \
-    tokenizer \
     xml \
     opcache \
     curl \
@@ -35,14 +36,17 @@ RUN apt-get update && apt-get install -y \
 # Instale o Composer globalmente
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copie o script de setup
+COPY ./.docker/setup.sh /usr/local/bin/setup.sh
+
+# Torne o script executável
+RUN chmod +x /usr/local/bin/setup.sh
+
 # Defina o diretório de trabalho
 WORKDIR /var/www/html
-
-# Ajuste permissões para diretórios necessários
-RUN chown -R www-data:www-data /var/www/html
 
 # Exponha a porta 9000
 EXPOSE 9000
 
-# Comando padrão ao iniciar o contêiner
-CMD ["php-fpm"]
+# Use o script de setup como comando inicial
+CMD ["sh", "/usr/local/bin/setup.sh"]

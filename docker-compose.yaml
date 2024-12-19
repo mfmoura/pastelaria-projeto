@@ -15,7 +15,8 @@ services:
 
   php:
     build:
-      context: ./.docker
+      context: .
+      dockerfile: ./.docker/Dockerfile
     volumes:
       - ./:/var/www/html
       - ./.docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -23,19 +24,15 @@ services:
       - "9000"
     networks:
       - dockernet
-    ports:
-      - "9003:9003"
 
   db:
-    image: mysql:5.7
+    image: mariadb
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: gentilcred
+      MARIADB_ROOT_PASSWORD: default
+      MARIADB_DATABASE: default
     volumes:
-      - ./.docker/mysql/data:/var/lib/mysql
-      - ./.docker/mysql/initdb:/docker-entrypoint-initdb.d
-      - ./.docker/mysql/:/dump
-      - ./.docker/mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./.docker/db-data:/var/lib/mysql
     ports:
       - "3306:3306"
     networks:

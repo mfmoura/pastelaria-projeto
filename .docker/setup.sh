@@ -7,13 +7,15 @@ if [ ! -f /var/www/html/composer.json ]; then
     # Instalar o Laravel
     composer create-project laravel/laravel .
 
-    # Configurar permissões
+    # Configurar permissões gerais
     chown -R www-data:www-data /var/www/html
     chown -R $USER:www-data .
     chown -R 1000:1000 /var/www/html
-    find . -type f -exec chmod 664 {} \;   
-    find . -type d -exec chmod 775 {} \;
-    
+
+    # Configurar permissões específicas para arquivos e diretórios
+    find storage bootstrap/cache -type f -exec chmod 664 {} \;
+    find storage bootstrap/cache -type d -exec chmod 775 {} \;
+
     echo "Laravel instalado com sucesso."
 else
     echo "Laravel já instalado. Pulando instalação."
