@@ -1,52 +1,54 @@
-# Use uma imagem base oficial do PHP 8.2
 FROM php:8.2-fpm
 
-# Instale dependências necessárias e extensões PHP
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libzip-dev \
-    unzip \
-    git \
-    libfreetype6-dev \
-    libjpeg-dev \
-    libpng-dev \
-    libwebp-dev \
-    libxpm-dev \
-    libonig-dev \
-    libxml2-dev \
-    libbz2-dev \
-    libtidy-dev \
-    libcurl4-openssl-dev \
-    curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm \
-    && docker-php-ext-install \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libbz2-dev \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libwebp-dev \
+        libxpm-dev \
+        libvpx-dev \
+        libonig-dev \
+        libxml2-dev \
+        libtidy-dev \
+        libzip-dev \
+        libxslt1-dev \
+        libssh2-1-dev \
+        wget \
+        nano \
+        htop \
+        iotop \
+        lsof \
+        unzip \
+        cron && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN install-php-extensions \
+    bz2 \
     gd \
+    tidy \
+    soap \
     zip \
     pdo \
     pdo_mysql \
-    mysqli \
-    bcmath \
     mbstring \
-    xml \
+    sodium \
+    sqlite3 \
+    xsl \
+    xmlrpc \
     opcache \
-    curl \
-    tidy \
-    bz2
+    ssh2
 
-# Instale o Composer globalmente
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Copie o script de setup
-COPY ./.docker/setup.sh /usr/local/bin/setup.sh
-
-# Torne o script executável
-RUN chmod +x /usr/local/bin/setup.sh
-
-# Defina o diretório de trabalho
 WORKDIR /var/www/html
 
-# Exponha a porta 9000
-EXPOSE 9000
+COPY ./.docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# Use o script de setup como comando inicial
-CMD ["sh", "/usr/local/bin/setup.sh"]
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 9000
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
