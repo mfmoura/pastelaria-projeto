@@ -16,6 +16,7 @@ services:
       - db
 
   php:
+    user: "1000:1000"
     build:
       context: .
       dockerfile: ./.docker/Dockerfile
@@ -37,6 +38,17 @@ services:
       - ./.docker/db-data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - dockernet
+
+  node:
+    image: node:20-bullseye
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "5173:5173"
     networks:
       - dockernet
 
