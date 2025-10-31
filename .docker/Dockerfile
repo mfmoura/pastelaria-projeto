@@ -44,6 +44,11 @@ RUN install-php-extensions \
     opcache \
     ssh2
 
+RUN pecl install pcov \
+    && docker-php-ext-enable pcov \
+    && echo "pcov.enabled=1" >> /usr/local/etc/php/conf.d/pcov.ini \
+    && echo "pcov.directory=/var/www/html" >> /usr/local/etc/php/conf.d/pcov.ini
+    
 WORKDIR /var/www/html
 
 COPY ./.docker/entrypoint.sh /usr/local/bin/entrypoint.sh
