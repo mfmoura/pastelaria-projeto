@@ -18,7 +18,7 @@ class PedidoService
 
     public static function ler(int $id): Pedido
     {
-        $pedido = Pedido::with('produtos')->findOrFail($id);
+        $pedido = Pedido::with('produtos', 'cliente')->findOrFail($id);
 
         return $pedido;
     }
@@ -47,7 +47,7 @@ class PedidoService
 
     public static function listar(int $pagina, int $registros): LengthAwarePaginator
     {
-        $pedidos = Pedido::with('produtos')
+        $pedidos = Pedido::with('produtos', 'cliente')
                          ->paginate($registros, ['*'], 'page', $pagina);
 
         return $pedidos;
@@ -55,7 +55,7 @@ class PedidoService
 
     private static function atualizarProdutos(Pedido $pedido, array $produtos)
     {
-        $pedido->produtos()->attach($produtos);
+        $pedido->produtos()->sync($produtos);
     }
 }
 ?>

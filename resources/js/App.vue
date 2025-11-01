@@ -1,9 +1,6 @@
 <template>
-  <h1>🍩 Pastelaria - Vue 3 rodando ✅</h1>
+  <router-view />
 </template>
 
-<script setup></script>
-
-<style scoped>
-h1 { font-family: sans-serif; }
-</style>
+<script setup>
+</script>
