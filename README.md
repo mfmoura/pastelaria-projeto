@@ -129,9 +129,8 @@ npm run build
 -   Laravel 12
 -   PHP 8.2+
 -   Vue 3 + Vite
--   TailwindCSS
 -   Docker
--   MySQL
+-   MariaDB
 -   PHPUnit
 -   PWA
 
