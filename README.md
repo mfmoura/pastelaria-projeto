@@ -40,11 +40,11 @@ docker compose up -d --build
 ### 3. Instale dependências dentro do container
 
 ``` bash
-docker compose exec app composer install
-docker compose exec app php artisan migrate
-docker compose db:seed
-npm install
-npm run build
+docker compose projeto-pastelaria-php-1 exec app composer install
+docker compose projeto-pastelaria-php-1 exec app php artisan migrate
+docker compose projeto-pastelaria-php-1 exec app php artisan db:seed
+docker compose projeto-pastelaria-node-1 exec npm install
+docker compose projeto-pastelaria-node-1 exec npm run build
 ```
 
 Backend: http://localhost\
